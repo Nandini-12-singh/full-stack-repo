@@ -188,12 +188,11 @@ function MoviesPageContent() {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.5 }}
-			className='min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-100 dark:from-gray-900 dark:via-black dark:to-gray-900 relative overflow-hidden'>
-			{/* Background Pattern */}
-			<div className='absolute inset-0 opacity-10 dark:opacity-5'>
-				<div className='absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,_rgba(120,119,198,0.3),_transparent_50%)]'></div>
-				<div className='absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,_rgba(255,119,198,0.3),_transparent_50%)]'></div>
-				<div className='absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_40%_40%,_rgba(120,200,255,0.3),_transparent_50%)]'></div>
+			className='min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-[#2d0f1e] dark:via-[#3d1c2e] dark:to-[#2d0f1e] relative overflow-hidden'>
+			{/* Soft blush background blobs */}
+			<div className='absolute inset-0 pointer-events-none'>
+				<div className='absolute top-0 left-1/4 w-96 h-96 bg-pink-200/30 dark:bg-pink-900/20 rounded-full blur-3xl'></div>
+				<div className='absolute bottom-1/4 right-1/4 w-80 h-80 bg-rose-200/25 dark:bg-rose-900/15 rounded-full blur-3xl'></div>
 			</div>
 
 			<Header onSearchClick={() => searchBarRef.current?.focus()} />
@@ -207,15 +206,17 @@ function MoviesPageContent() {
 						transition={{ duration: 0.6, ease: "easeOut" }}
 						className='text-center mb-10 md:mb-14'>
 						<h1 className='text-4xl sm:text-5xl md:text-6xl font-black mb-4 leading-tight tracking-tight'>
-							<span className='bg-gradient-to-r from-red-500 via-rose-500 to-purple-600 dark:from-red-400 dark:via-pink-400 dark:to-purple-400 bg-clip-text text-transparent'>
+							<span className='bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500
+							                 dark:from-pink-300 dark:via-rose-300 dark:to-pink-400
+							                 bg-clip-text text-transparent'>
 								Discover
 							</span>
 							{" "}
-							<span className='text-gray-900 dark:text-white'>
+							<span className='text-gray-800 dark:text-pink-100'>
 								great films
 							</span>
 						</h1>
-						<p className='text-base md:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto'>
+						<p className='text-base md:text-lg text-gray-400 dark:text-pink-300/70 max-w-2xl mx-auto'>
 							Search millions of movies, TV series, and episodes — then track, rate, and share what you love.
 						</p>
 					</motion.div>
@@ -263,29 +264,36 @@ function MoviesPageContent() {
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.4 }}
-									className='mb-6 flex flex-wrap items-center gap-3 justify-between px-4 py-3 bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-gray-200/60 dark:border-white/10 rounded-xl'>
+									className='mb-6 flex flex-wrap items-center gap-3 justify-between
+									           px-4 py-3
+									           bg-white/80 dark:bg-pink-950/40
+									           backdrop-blur-xl
+									           border border-pink-100 dark:border-pink-900/50
+									           rounded-xl shadow-sm'>
 									<div className='flex items-center gap-4 flex-wrap'>
-										<span className='text-sm font-medium text-gray-600 dark:text-gray-300'>
-											<span className='font-bold text-gray-900 dark:text-white'>{moviesToDisplay.length}</span>
+										<span className='text-sm font-medium text-gray-500 dark:text-pink-300/70'>
+											<span className='font-bold text-gray-800 dark:text-pink-100'>{moviesToDisplay.length}</span>
 											{" "}of{" "}
-											<span className='font-bold text-gray-900 dark:text-white'>{totalResults}</span>
+											<span className='font-bold text-gray-800 dark:text-pink-100'>{totalResults}</span>
 											{" "}results
 										</span>
 										{actorData && actorData.length > 0 && searchType !== "movie" && (
-											<span className='text-sm text-gray-500 dark:text-gray-400'>
+											<span className='text-sm text-gray-400 dark:text-pink-400/70'>
 												·{" "}
-												<span className='font-semibold text-purple-600 dark:text-purple-400'>{actorData.length} actors</span>
+												<span className='font-semibold text-pink-500 dark:text-pink-300'>{actorData.length} actors</span>
 											</span>
 										)}
 										{(searchQuery.trim() || urlGenreParam) && (
-											<span className='text-sm text-gray-500 dark:text-gray-400 italic'>
+											<span className='text-sm text-pink-400 dark:text-pink-400/80 italic'>
 												for &ldquo;{searchQuery.trim() || urlGenreParam}&rdquo;
 											</span>
 										)}
 									</div>
 									<div className='flex items-center gap-2'>
-										<label className='text-sm text-gray-500 dark:text-gray-400'>Sort:</label>
-										<select className='premium-select px-3 py-1.5 rounded-lg text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-red-500/50 transition-all duration-200'>
+										<label className='text-sm text-gray-400 dark:text-pink-400/60'>Sort:</label>
+										<select className='premium-select px-3 py-1.5 rounded-lg text-sm
+										                   focus:ring-2 focus:ring-pink-300/50
+										                   transition-all duration-200'>
 											<option value='relevance'>Relevance</option>
 											<option value='year'>Year</option>
 											<option value='rating'>Rating</option>
@@ -298,19 +306,23 @@ function MoviesPageContent() {
 									<motion.div
 										initial={{ opacity: 0, y: -10 }}
 										animate={{ opacity: 1, y: 0 }}
-										className='mb-6 p-4 bg-gradient-to-r from-purple-100/80 to-pink-100/80 dark:from-purple-500/10 dark:to-pink-500/10 backdrop-blur-sm rounded-xl border border-purple-200/50 dark:border-purple-500/20'>
+										className='mb-6 p-4
+										           bg-gradient-to-r from-pink-50 to-rose-50
+										           dark:from-pink-950/40 dark:to-rose-950/40
+										           backdrop-blur-sm rounded-xl
+										           border border-pink-200/60 dark:border-pink-800/40'>
 										<div className='flex items-center gap-3'>
-											<div className='w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center'>
+											<div className='w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-400
+											                rounded-full flex items-center justify-center flex-shrink-0'>
 												<Tag className='w-4 h-4 text-white' />
 											</div>
 											<div>
-												<p className='text-sm font-medium text-purple-700 dark:text-purple-300'>
+												<p className='text-sm font-medium text-pink-600 dark:text-pink-300'>
 													Filtered by genre:{" "}
 													{MOVIE_GENRES.find((g) => g.value === genre)?.label}
 												</p>
-												<p className='text-xs text-gray-500 dark:text-gray-400'>
-													Results are filtered client-side after fetching movie
-													details
+												<p className='text-xs text-gray-400 dark:text-pink-400/60'>
+													Results are filtered client-side after fetching movie details
 												</p>
 											</div>
 										</div>
@@ -322,18 +334,19 @@ function MoviesPageContent() {
 									<MovieGrid movies={moviesToDisplay} />
 								)}
 
-								{/* Display Actors */}
+								{/* Actors section header */}
 								{actorData &&
 									actorData.length > 0 &&
 									searchType !== "movie" && (
 										<div className='mt-10'>
 											<div className='mb-5 flex items-center gap-3'>
-												<div className='w-7 h-7 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0'>
+												<div className='w-7 h-7 bg-gradient-to-br from-pink-400 to-rose-400
+												                rounded-lg flex items-center justify-center flex-shrink-0'>
 													<User className='w-4 h-4 text-white' />
 												</div>
 												<div>
-													<h2 className='text-lg font-bold text-gray-900 dark:text-white'>Actors Found</h2>
-													<p className='text-xs text-gray-500 dark:text-gray-400'>{actorData.length} matching your search</p>
+													<h2 className='text-lg font-bold text-gray-800 dark:text-pink-100'>Actors Found</h2>
+													<p className='text-xs text-gray-400 dark:text-pink-400/70'>{actorData.length} matching your search</p>
 												</div>
 											</div>
 											<ActorGrid
@@ -351,64 +364,70 @@ function MoviesPageContent() {
 										</div>
 									)}
 
-								{/* Load More Button */}
-								{/* Only show load more if not currently filtering by genre (as pagination breaks with client-side filtering) */}
+								{/* Load More */}
 								{hasNextPage && genre === "all" && (
-										<motion.div
-											initial={{ opacity: 0, y: 20 }}
-											animate={{ opacity: 1, y: 0 }}
-											transition={{ duration: 0.4 }}
-											className='flex flex-col items-center mt-10 gap-4'>
-											{/* Progress bar */}
-											<div className='w-full max-w-md'>
-												<div className='flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1.5'>
-													<span>{moviesToDisplay.length} loaded</span>
-													<span>{totalResults} total</span>
-												</div>
-												<div className='w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden'>
-													<motion.div
-														initial={{ width: 0 }}
-														animate={{
-															width: `${(moviesToDisplay.length / parseInt(totalResults)) * 100}%`,
-														}}
-														transition={{ duration: 0.6, ease: "easeOut" }}
-														className='h-full bg-gradient-to-r from-red-500 to-purple-500 rounded-full'
-													/>
-												</div>
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.4 }}
+										className='flex flex-col items-center mt-10 gap-4'>
+										{/* Progress bar */}
+										<div className='w-full max-w-md'>
+											<div className='flex justify-between text-xs text-gray-400 dark:text-pink-400/60 mb-1.5'>
+												<span>{moviesToDisplay.length} loaded</span>
+												<span>{totalResults} total</span>
 											</div>
+											<div className='w-full bg-pink-100 dark:bg-pink-950/50 rounded-full h-1.5 overflow-hidden'>
+												<motion.div
+													initial={{ width: 0 }}
+													animate={{
+														width: `${(moviesToDisplay.length / parseInt(totalResults)) * 100}%`,
+													}}
+													transition={{ duration: 0.6, ease: "easeOut" }}
+													className='h-full bg-gradient-to-r from-pink-400 to-rose-400 rounded-full'
+												/>
+											</div>
+										</div>
 
-											<motion.button
-												whileHover={{ scale: 1.02 }}
-												whileTap={{ scale: 0.97 }}
-												onClick={() => fetchNextPage?.()}
-												disabled={isFetchingNextPage}
-												className='flex items-center gap-3 px-7 py-3 bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'>
-												{isFetchingNextPage ? (
-													<>
-														<div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-														Loading...
-													</>
-												) : (
-													<>
-														Load more
-														<span className='bg-white/20 px-2 py-0.5 rounded-full text-xs'>
-															+{Math.min(10, parseInt(totalResults) - moviesToDisplay.length)}
-														</span>
-													</>
-												)}
-											</motion.button>
-										</motion.div>
-									)}
+										<motion.button
+											whileHover={{ scale: 1.02 }}
+											whileTap={{ scale: 0.97 }}
+											onClick={() => fetchNextPage?.()}
+											disabled={isFetchingNextPage}
+											className='flex items-center gap-3 px-7 py-3
+											           bg-gradient-to-r from-pink-400 to-rose-400
+											           hover:from-pink-500 hover:to-rose-500
+											           text-white rounded-xl font-semibold text-sm
+											           shadow-md shadow-pink-200/50
+											           transition-all duration-200
+											           disabled:opacity-50 disabled:cursor-not-allowed'>
+											{isFetchingNextPage ? (
+												<>
+													<div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+													Loading...
+												</>
+											) : (
+												<>
+													Load more
+													<span className='bg-white/25 px-2 py-0.5 rounded-full text-xs'>
+														+{Math.min(10, parseInt(totalResults) - moviesToDisplay.length)}
+													</span>
+												</>
+											)}
+										</motion.button>
+									</motion.div>
+								)}
 
 								{hasResults && !hasNextPage && (
 									<motion.div
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
 										transition={{ duration: 0.4 }}
-										className='text-center mt-12 py-8 border-t border-gray-200/50 dark:border-white/10'>
-										<p className='text-sm text-gray-500 dark:text-gray-400'>
+										className='text-center mt-12 py-8
+										           border-t border-pink-100 dark:border-pink-900/40'>
+										<p className='text-sm text-gray-400 dark:text-pink-400/60'>
 											Showing all{" "}
-											<span className='font-semibold text-gray-700 dark:text-gray-200'>{moviesToDisplay.length}</span>{" "}
+											<span className='font-semibold text-pink-500 dark:text-pink-300'>{moviesToDisplay.length}</span>{" "}
 											results
 										</p>
 									</motion.div>
@@ -419,6 +438,7 @@ function MoviesPageContent() {
 				</div>
 			</main>
 
+			{/* Toast */}
 			<AnimatePresence>
 				{showToast && (
 					<motion.div
@@ -427,9 +447,12 @@ function MoviesPageContent() {
 						exit={{ opacity: 0, y: 50, scale: 0.95 }}
 						transition={{ duration: 0.25 }}
 						className='fixed bottom-6 right-6 z-50'>
-						<div className='bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl px-5 py-3.5 flex items-center gap-3 max-w-xs'>
-							<div className='w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0' />
-							<span className='text-gray-800 dark:text-gray-100 font-medium text-sm'>
+						<div className='bg-white dark:bg-[#4a1e35]
+						                border border-pink-200 dark:border-pink-800/50
+						                rounded-xl shadow-xl shadow-pink-100/50
+						                px-5 py-3.5 flex items-center gap-3 max-w-xs'>
+							<div className='w-2 h-2 bg-pink-400 rounded-full animate-pulse flex-shrink-0' />
+							<span className='text-gray-700 dark:text-pink-200 font-medium text-sm'>
 								{toastMessage}
 							</span>
 						</div>

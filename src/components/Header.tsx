@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-// NEW: Import usePathname to detect the current page
 import { usePathname } from "next/navigation";
 import {
 	Film,
@@ -9,11 +8,11 @@ import {
 	Menu,
 	User,
 	Home,
-	Zap,
 	Tv,
 	Grid,
 	X,
 	Bookmark,
+	Heart,
 } from "lucide-react";
 import { DarkModeToggle } from "./DarkModeToggle";
 import Link from "next/link";
@@ -33,312 +32,260 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
 		(state: RootState) => state.watchlist.movies
 	);
 
-	// Handle hydration to prevent mismatches
 	useEffect(() => {
 		setIsHydrated(true);
 	}, []);
 
+	const navLinks = [
+		{ name: "Movies",    path: "/movies",    icon: Home     },
+		{ name: "TV Shows",  path: "/tv-shows",  icon: Tv       },
+		{ name: "Actors",    path: "/actors",    icon: User     },
+		{ name: "Genres",    path: "/genres",    icon: Grid     },
+		{ name: "Watchlist", path: "/watchlist", icon: Bookmark,
+		  badge: isHydrated && watchlistMovies.length > 0 ? watchlistMovies.length : null },
+	];
+
 	return (
 		<>
+			{/* ── Main header bar ───────────────────────────────────── */}
 			<motion.header
 				initial={{ y: -100, opacity: 0 }}
 				animate={{ y: 0, opacity: 1 }}
-				transition={{ duration: 0.6, ease: "easeOut" }}
-				className='fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/30 backdrop-blur-2xl border-b border-gray-200/50 dark:border-white/5 transition-all duration-500 hover:bg-white/90 dark:hover:bg-black/50'>
-				{/* Background overlays */}
-				<div className='absolute inset-0 bg-gradient-to-r from-red-600/5 via-purple-600/5 to-blue-600/5 dark:from-red-600/5 dark:via-purple-600/5 dark:to-blue-600/5 opacity-80'></div>
-				<div className='absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/20 dark:to-black/20'></div>
+				transition={{ duration: 0.5, ease: "easeOut" }}
+				className="fixed top-0 left-0 right-0 z-50
+				           bg-white/90 dark:bg-[#3d1c2e]/90
+				           backdrop-blur-2xl
+				           border-b border-pink-200/60 dark:border-pink-900/40
+				           transition-all duration-300">
 
-				<div className='relative container mx-auto px-3 sm:px-4 md:px-6 h-14 sm:h-16 md:h-20 lg:h-24 flex items-center justify-between'>
-					{/* Logo section - responsive sizing */}
+				{/* Subtle pink tint overlay */}
+				<div className="absolute inset-0 bg-gradient-to-r
+				                from-pink-50/60 via-white/40 to-rose-50/60
+				                dark:from-pink-950/30 dark:via-transparent dark:to-rose-950/30
+				                pointer-events-none" />
+
+				<div className="relative container mx-auto
+				                px-3 sm:px-4 md:px-6
+				                h-14 sm:h-16 md:h-20
+				                flex items-center justify-between">
+
+					{/* ── Logo ───────────────────────────────────────── */}
 					<Link
-						href='/movies'
-						className='flex items-center gap-1 sm:gap-2 md:gap-4 hover:scale-105 transition-all duration-300 group flex-shrink-0'>
-						<div className='relative'>
-							<div className='absolute -inset-1 sm:-inset-2 md:-inset-3 bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 rounded-lg sm:rounded-xl md:rounded-2xl blur-lg sm:blur-xl md:blur-2xl opacity-20 group-hover:opacity-40 transition-all duration-500'></div>
-							<div className='absolute -inset-0.5 sm:-inset-1 md:-inset-2 bg-gradient-to-br from-red-600/30 to-purple-700/30 rounded-md sm:rounded-lg md:rounded-xl blur-sm sm:blur-md md:blur-lg opacity-60 group-hover:opacity-80 transition-all duration-300'></div>
-							<div className='relative bg-gradient-to-br from-red-600 via-red-700 to-purple-800 p-1.5 sm:p-2 md:p-3 lg:p-4 rounded-md sm:rounded-lg md:rounded-xl shadow-2xl border border-red-500/20'>
+						href="/movies"
+						className="flex items-center gap-2 md:gap-3
+						           hover:scale-105 transition-transform duration-300
+						           group flex-shrink-0">
+						<div className="relative">
+							{/* Glow ring */}
+							<div className="absolute -inset-1 bg-gradient-to-br
+							                from-pink-300 via-rose-300 to-pink-400
+							                rounded-xl blur-md opacity-30
+							                group-hover:opacity-60 transition-opacity duration-300" />
+							{/* Icon box */}
+							<div className="relative bg-gradient-to-br
+							                from-pink-400 via-rose-400 to-pink-500
+							                p-2 md:p-2.5 rounded-xl
+							                shadow-lg shadow-pink-200/60
+							                border border-pink-300/40">
 								<motion.div
 									whileHover={{ rotate: 360 }}
-									transition={{ duration: 0.8, ease: "easeOut" }}>
-									<Film className='h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-8 lg:w-8 text-white drop-shadow-lg' />
+									transition={{ duration: 0.7, ease: "easeOut" }}>
+									<Film className="h-4 w-4 md:h-5 md:w-5 text-white drop-shadow" />
 								</motion.div>
 							</div>
-							<div className='absolute inset-0 rounded-md sm:rounded-lg md:rounded-xl border-2 border-red-500/30 animate-pulse'></div>
 						</div>
-						<div className='flex flex-col min-w-0'>
-							<motion.h1
-								whileHover={{ scale: 1.05 }}
-								className='text-base sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-black bg-gradient-to-r from-gray-900 via-red-600 to-purple-600 dark:from-white dark:via-red-200 dark:to-purple-200 bg-clip-text text-transparent tracking-tight truncate'>
+
+						<div className="flex flex-col">
+							<span className="text-base sm:text-xl md:text-2xl font-black
+							                 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600
+							                 dark:from-pink-300 dark:via-rose-300 dark:to-pink-400
+							                 bg-clip-text text-transparent tracking-tight">
 								CineVerse
-							</motion.h1>
+							</span>
+							<span className="hidden sm:block text-[10px] font-semibold
+							                 tracking-widest uppercase
+							                 text-pink-400 dark:text-pink-400 -mt-0.5">
+								✦ Discover &amp; Explore
+							</span>
 						</div>
 					</Link>
 
-					{/* Navigation Section - Desktop Only */}
-					<div className='hidden md:flex items-center flex-1 justify-start ml-4 lg:ml-8 xl:ml-12'>
-						{/* Desktop Navigation */}
-						<nav className='flex items-center gap-1 lg:gap-2'>
-							{/* Movies Link with Active State */}
-							<Link
-								href='/movies'
-								className={`relative group px-4 lg:px-6 py-3 transition-all duration-300 font-semibold tracking-wide ${
-									pathname === "/movies"
-										? "text-gray-900 dark:text-white"
-										: "text-gray-700 dark:text-white/90 hover:text-gray-900 dark:hover:text-white"
-								}`}>
-								<span className='relative z-10 flex items-center gap-2'>
-									<Home className='w-4 h-4' />
-									Movies
-								</span>
-								<div
-									className={`absolute inset-0 bg-gradient-to-r from-red-500/20 to-purple-500/20 rounded-xl transition-transform duration-300 shadow-lg ${
-										pathname === "/movies"
-											? "scale-100"
-											: "scale-0 group-hover:scale-100"
-									}`}></div>
-								<div
-									className={`absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-purple-500 rounded-full transition-transform duration-300 ${
-										pathname === "/movies"
-											? "scale-x-100"
-											: "scale-x-0 group-hover:scale-x-100"
-									}`}></div>
-							</Link>
-
-							{/* Actors Link with Active State */}
-							<Link
-								href='/actors'
-								className={`relative group px-4 lg:px-6 py-3 transition-all duration-300 font-semibold tracking-wide ${
-									pathname === "/actors"
-										? "text-gray-900 dark:text-white" // Active style
-										: "text-gray-700 dark:text-white/90 hover:text-gray-900 dark:hover:text-white" // Inactive style
-								}`}>
-								<span className='relative z-10 flex items-center gap-2'>
-									<User className='w-4 h-4' />
-									Actors
-								</span>
-								<div
-									className={`absolute inset-0 bg-gradient-to-r from-red-500/20 to-purple-500/20 rounded-xl transition-transform duration-300 shadow-lg ${
-										pathname === "/actors"
-											? "scale-100"
-											: "scale-0 group-hover:scale-100"
-									}`}></div>
-								<div
-									className={`absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-purple-500 rounded-full transition-transform duration-300 ${
-										pathname === "/actors"
-											? "scale-x-100"
-											: "scale-x-0 group-hover:scale-x-100"
-									}`}></div>
-							</Link>
-
-							{/* Genres Link with Active State */}
-							<Link
-								href='/genres'
-								className={`relative group px-4 lg:px-6 py-3 transition-all duration-300 font-semibold tracking-wide ${
-									pathname === "/genres"
-										? "text-gray-900 dark:text-white" // Active style
-										: "text-gray-700 dark:text-white/90 hover:text-gray-900 dark:hover:text-white" // Inactive style
-								}`}>
-								<span className='relative z-10 flex items-center gap-2'>
-									<Grid className='w-4 h-4' />
-									Genres
-								</span>
-								<div
-									className={`absolute inset-0 bg-gradient-to-r from-red-500/20 to-purple-500/20 rounded-xl transition-transform duration-300 shadow-lg ${
-										pathname === "/genres"
-											? "scale-100"
-											: "scale-0 group-hover:scale-100"
-									}`}></div>
-								<div
-									className={`absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-purple-500 rounded-full transition-transform duration-300 ${
-										pathname === "/genres"
-											? "scale-x-100"
-											: "scale-x-0 group-hover:scale-x-100"
-									}`}></div>
-							</Link>
-
-							{/* Watchlist Link with Active State */}
-							<Link
-								href='/watchlist'
-								className={`relative group px-4 lg:px-6 py-3 transition-all duration-300 font-semibold tracking-wide ${
-									pathname === "/watchlist"
-										? "text-gray-900 dark:text-white"
-										: "text-gray-700 dark:text-white/90 hover:text-gray-900 dark:hover:text-white"
-								}`}>
-								<span className='relative z-10 flex items-center gap-2'>
-									<Bookmark className='w-4 h-4' />
-									Watchlist
-									{watchlistMovies.length > 0 && (
-										<span className='bg-gradient-to-r from-red-500 to-purple-600 text-white text-xs px-2 py-0.5 rounded-full font-bold'>
-											{watchlistMovies.length}
-										</span>
-									)}
-								</span>
-								<div
-									className={`absolute inset-0 bg-gradient-to-r from-red-500/20 to-purple-500/20 rounded-xl transition-transform duration-300 shadow-lg ${
-										pathname === "/watchlist"
-											? "scale-100"
-											: "scale-0 group-hover:scale-100"
-									}`}></div>
-								<div
-									className={`absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-purple-500 rounded-full transition-transform duration-300 ${
-										pathname === "/watchlist"
-											? "scale-x-100"
-											: "scale-x-0 group-hover:scale-x-100"
-									}`}></div>
-							</Link>
-
-							{/* Premium Badge - Desktop Only */}
-							<div className='ml-4 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full'>
-								<div className='flex items-center gap-2'>
-									<Zap className='w-4 h-4 text-amber-500 dark:text-amber-400' />
-									<span className='text-amber-600 dark:text-amber-300 font-bold text-sm tracking-wide'>
-										PREMIUM
+					{/* ── Desktop nav ────────────────────────────────── */}
+					<nav className="hidden md:flex items-center gap-1 ml-6 lg:ml-10">
+						{navLinks.map(({ name, path, icon: Icon, badge }) => {
+							const isActive = pathname === path;
+							return (
+								<Link
+									key={path}
+									href={path}
+									className={`relative group px-4 py-2 rounded-xl font-semibold text-sm
+									            transition-all duration-200
+									            ${isActive
+									              ? "text-pink-600 dark:text-pink-300"
+									              : "text-gray-600 dark:text-pink-200/70 hover:text-pink-600 dark:hover:text-pink-300"
+									            }`}>
+									{/* Active / hover bg pill */}
+									<div className={`absolute inset-0 rounded-xl transition-all duration-200
+									                 bg-gradient-to-r from-pink-100 to-rose-100
+									                 dark:from-pink-900/40 dark:to-rose-900/40
+									                 ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
+									<span className="relative flex items-center gap-1.5">
+										<Icon className="w-3.5 h-3.5" />
+										{name}
+										{badge && (
+											<span className="bg-gradient-to-r from-pink-500 to-rose-500
+											                 text-white text-[10px] px-1.5 py-0.5
+											                 rounded-full font-bold leading-none">
+												{badge}
+											</span>
+										)}
 									</span>
-								</div>
-							</div>
-						</nav>
-					</div>
-
-					{/* Right Side Actions */}
-					<div className='flex items-center gap-3'>
-						{/* Right Side Actions */}
-						<div className='flex items-center gap-1 sm:gap-2 md:gap-3 flex-shrink-0'>
-							{/* Search Button */}
-							<motion.button
-								onClick={onSearchClick || undefined}
-								whileHover={{ scale: 1.1 }}
-								whileTap={{ scale: 0.95 }}
-								className='p-1.5 sm:p-2 md:p-3 text-gray-600 dark:text-white/80 hover:text-gray-800 dark:hover:text-white transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md sm:rounded-lg md:rounded-xl backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 touch-target'>
-								<Search className='h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5' />
-							</motion.button>
-
-							{/* Watchlist Button */}
-							<Link href='/watchlist'>
-								<motion.button
-									whileHover={{ scale: 1.1 }}
-									whileTap={{ scale: 0.95 }}
-									className='relative p-1.5 sm:p-2 md:p-3 text-gray-600 dark:text-white/80 hover:text-gray-800 dark:hover:text-white transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md sm:rounded-lg md:rounded-xl backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 touch-target'>
-									<Bookmark className='h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5' />
-									{isHydrated && watchlistMovies.length > 0 && (
-										<div className='absolute -top-1 -right-1 w-2.5 h-2.5 md:w-3 md:h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full border-2 border-white dark:border-black animate-pulse shadow-lg shadow-red-500/50'></div>
-									)}
-								</motion.button>
-							</Link>
-
-							{/* Dark Mode Toggle */}
-							<div className='p-0.5 sm:p-1 rounded-md sm:rounded-lg md:rounded-xl backdrop-blur-sm border border-gray-200 dark:border-white/10'>
-								<DarkModeToggle />
-							</div>
-
-							{/* User Profile - Responsive */}
-							<motion.div
-								whileHover={{ scale: 1.05 }}
-								className='hidden sm:block relative group'>
-								<Link href='/profile'>
-									<motion.button
-										whileTap={{ scale: 0.95 }}
-										className='flex items-center gap-2 md:gap-3 p-1.5 sm:p-2 pr-2 sm:pr-3 md:pr-4 bg-gradient-to-r from-red-600/20 to-purple-600/20 hover:from-red-600/30 hover:to-purple-600/30 backdrop-blur-sm border border-red-500/30 dark:border-white/20 hover:border-red-500/40 dark:hover:border-white/30 rounded-lg md:rounded-xl transition-all duration-300 shadow-lg'>
-										<div className='relative w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-gradient-to-br from-red-500 to-purple-600 rounded-md sm:rounded-lg flex items-center justify-center overflow-hidden'>
-											<User className='h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-white' />
-											<div className='absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-green-400 border-1 sm:border-2 border-white dark:border-black rounded-full'></div>
-										</div>
-										<div className='hidden md:block text-left'>
-											<div className='text-gray-900 dark:text-white/90 font-semibold text-sm'>
-												Profile
-											</div>
-											<div className='text-gray-600 dark:text-white/60 text-xs'>
-												Premium User
-											</div>
-										</div>
-									</motion.button>
+									{/* Active underline */}
+									<div className={`absolute -bottom-px left-3 right-3 h-0.5
+									                 bg-gradient-to-r from-pink-400 to-rose-400
+									                 rounded-full transition-transform duration-200
+									                 ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
 								</Link>
-								<div className='absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-400 dark:border-t-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
-							</motion.div>
+							);
+						})}
+					</nav>
 
-							{/* Mobile Hamburger Menu Button */}
+					{/* ── Right actions ──────────────────────────────── */}
+					<div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+
+						{/* Search */}
+						<motion.button
+							onClick={onSearchClick}
+							whileHover={{ scale: 1.08 }}
+							whileTap={{ scale: 0.93 }}
+							className="p-2 rounded-xl text-pink-400 hover:text-pink-600
+							           hover:bg-pink-50 dark:hover:bg-pink-900/30
+							           border border-transparent hover:border-pink-200 dark:hover:border-pink-800
+							           transition-all duration-200 touch-target">
+							<Search className="h-4 w-4" />
+						</motion.button>
+
+						{/* Watchlist icon */}
+						<Link href="/watchlist">
 							<motion.button
-								onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-								whileHover={{ scale: 1.1 }}
-								whileTap={{ scale: 0.95 }}
-								className='md:hidden p-1.5 sm:p-2 text-gray-600 dark:text-white/80 hover:text-gray-800 dark:hover:text-white transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md sm:rounded-lg backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 touch-target'
-								aria-label='Toggle mobile menu'>
-								<motion.div
-									animate={isMobileMenuOpen ? { rotate: 180 } : { rotate: 0 }}
-									transition={{ duration: 0.3 }}>
-									{isMobileMenuOpen ? (
-										<X className='h-5 w-5' />
-									) : (
-										<Menu className='h-5 w-5' />
-									)}
-								</motion.div>
+								whileHover={{ scale: 1.08 }}
+								whileTap={{ scale: 0.93 }}
+								className="relative p-2 rounded-xl text-pink-400 hover:text-pink-600
+								           hover:bg-pink-50 dark:hover:bg-pink-900/30
+								           border border-transparent hover:border-pink-200 dark:hover:border-pink-800
+								           transition-all duration-200 touch-target">
+								<Bookmark className="h-4 w-4" />
+								{isHydrated && watchlistMovies.length > 0 && (
+									<span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5
+									                 bg-gradient-to-br from-pink-500 to-rose-500
+									                 rounded-full border-2 border-white dark:border-[#3d1c2e]
+									                 animate-pulse" />
+								)}
 							</motion.button>
+						</Link>
+
+						{/* Dark mode toggle */}
+						<div className="p-0.5 rounded-xl border border-pink-200/60 dark:border-pink-800/40">
+							<DarkModeToggle />
 						</div>
+
+						{/* Profile */}
+						<Link href="/profile" className="hidden sm:block">
+							<motion.button
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+								className="flex items-center gap-2 px-3 py-1.5
+								           bg-gradient-to-r from-pink-50 to-rose-50
+								           dark:from-pink-900/30 dark:to-rose-900/30
+								           border border-pink-200/70 dark:border-pink-800/50
+								           rounded-xl transition-all duration-200
+								           hover:shadow-md hover:shadow-pink-100 dark:hover:shadow-pink-900/20">
+								<div className="relative w-6 h-6 md:w-7 md:h-7
+								                bg-gradient-to-br from-pink-400 to-rose-500
+								                rounded-lg flex items-center justify-center">
+									<User className="h-3.5 w-3.5 text-white" />
+									<div className="absolute -bottom-0.5 -right-0.5
+									                w-2 h-2 bg-emerald-400
+									                border-2 border-white dark:border-[#3d1c2e]
+									                rounded-full" />
+								</div>
+								<span className="hidden md:block text-sm font-semibold
+								                 text-pink-600 dark:text-pink-300">
+									Profile
+								</span>
+							</motion.button>
+						</Link>
+
+						{/* Hamburger */}
+						<motion.button
+							onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+							whileHover={{ scale: 1.08 }}
+							whileTap={{ scale: 0.93 }}
+							aria-label="Toggle menu"
+							className="md:hidden p-2 rounded-xl
+							           text-pink-500 hover:text-pink-700
+							           hover:bg-pink-50 dark:hover:bg-pink-900/30
+							           border border-transparent hover:border-pink-200 dark:hover:border-pink-800
+							           transition-all duration-200 touch-target">
+							<motion.div animate={isMobileMenuOpen ? { rotate: 90 } : { rotate: 0 }}
+							            transition={{ duration: 0.25 }}>
+								{isMobileMenuOpen
+									? <X className="h-5 w-5" />
+									: <Menu className="h-5 w-5" />
+								}
+							</motion.div>
+						</motion.button>
 					</div>
 				</div>
+
+				{/* Bottom accent line */}
+				<div className="absolute bottom-0 left-0 right-0 h-px
+				                bg-gradient-to-r from-transparent via-pink-300/70 to-transparent" />
 			</motion.header>
 
-			{/* Bottom border effects */}
-			<div className='absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent'></div>
-			<div className='absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent animate-pulse'></div>
-
-			{/* Mobile Navigation Dropdown */}
+			{/* ── Mobile dropdown ───────────────────────────────────── */}
 			<AnimatePresence>
 				{isMobileMenuOpen && (
 					<motion.div
-						initial={{ opacity: 0, y: -20, scale: 0.95 }}
-						animate={{ opacity: 1, y: 0, scale: 1 }}
-						exit={{ opacity: 0, y: -20, scale: 0.95 }}
+						initial={{ opacity: 0, y: -12, scale: 0.97 }}
+						animate={{ opacity: 1, y: 0,   scale: 1     }}
+						exit={{    opacity: 0, y: -12, scale: 0.97  }}
 						transition={{ duration: 0.2, ease: "easeOut" }}
-						className='fixed top-14 sm:top-16 md:top-20 lg:top-24 left-0 right-0 z-40 md:hidden'>
-						<div className='mx-3 sm:mx-4 mt-2 bg-white/95 dark:bg-black/85 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden'>
-							{/* Mobile Navigation Links */}
-							<div className='p-3 sm:p-4 space-y-1 sm:space-y-2'>
-								{[
-									{ name: "Movies", path: "/movies", icon: Home },
-									{ name: "TV Shows", path: "/tv-shows", icon: Tv },
-									{ name: "Actors", path: "/actors", icon: User },
-									{ name: "Genres", path: "/genres", icon: Grid },
-									{
-										name: "Watchlist",
-										path: "/watchlist",
-										icon: Bookmark,
-										badge:
-											isHydrated && watchlistMovies.length > 0
-												? watchlistMovies.length
-												: null,
-									},
-								].map((item, index) => {
-									const Icon = item.icon;
-									const isActive = pathname === item.path;
+						className="fixed top-14 sm:top-16 left-0 right-0 z-40 md:hidden px-3 pt-2">
+						<div className="bg-white/97 dark:bg-[#3d1c2e]/97
+						                backdrop-blur-2xl
+						                border border-pink-200/60 dark:border-pink-800/40
+						                rounded-2xl shadow-xl shadow-pink-100/50
+						                overflow-hidden">
+
+							{/* Nav links */}
+							<div className="p-3 space-y-1">
+								{navLinks.map(({ name, path, icon: Icon, badge }, i) => {
+									const isActive = pathname === path;
 									return (
 										<motion.div
-											key={item.path}
-											initial={{ opacity: 0, x: -20 }}
-											animate={{ opacity: 1, x: 0 }}
-											transition={{ delay: index * 0.1, duration: 0.3 }}>
+											key={path}
+											initial={{ opacity: 0, x: -16 }}
+											animate={{ opacity: 1, x: 0   }}
+											transition={{ delay: i * 0.06, duration: 0.25 }}>
 											<Link
-												href={item.path}
+												href={path}
 												onClick={() => setIsMobileMenuOpen(false)}
-												className={`flex items-center gap-3 p-3 sm:p-4 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 touch-target ${
-													isActive
-														? "text-white bg-gradient-to-r from-red-600 to-purple-600 shadow-lg"
-														: "text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-white/50 dark:hover:bg-white/5"
-												}`}>
-												<Icon
-													className={`w-5 h-5 ${isActive ? "text-white" : ""}`}
-												/>
-												<span className='text-base'>{item.name}</span>
-												{item.badge && (
-													<span className='ml-auto bg-gradient-to-r from-red-500 to-purple-600 text-white text-xs px-2 py-0.5 rounded-full font-bold'>
-														{item.badge}
+												className={`flex items-center gap-3 px-4 py-3
+												            rounded-xl font-semibold text-sm
+												            transition-all duration-200 touch-target
+												            ${isActive
+												              ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md shadow-pink-200/50"
+												              : "text-gray-600 dark:text-pink-200/80 hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 dark:hover:text-pink-300"
+												            }`}>
+												<Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-pink-400"}`} />
+												{name}
+												{badge && (
+													<span className="ml-auto bg-white/30 text-white
+													                 text-[10px] px-2 py-0.5
+													                 rounded-full font-bold">
+														{badge}
 													</span>
-												)}
-												{isActive && !item.badge && (
-													<motion.div
-														layoutId='mobileActiveTab'
-														className='ml-auto w-2 h-2 bg-white rounded-full'
-													/>
 												)}
 											</Link>
 										</motion.div>
@@ -346,34 +293,25 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
 								})}
 							</div>
 
-							{/* Mobile Premium Badge & User Info */}
-							<div className='px-3 sm:px-4 pb-3 sm:pb-4 pt-2 border-t border-gray-200/50 dark:border-white/10'>
-								<div className='flex items-center justify-between'>
-									{/* Premium Badge */}
-									<div className='flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 backdrop-blur-sm border border-amber-500/30 rounded-full'>
-										<Zap className='w-3 h-3 sm:w-4 sm:h-4 text-amber-500 dark:text-amber-400' />
-										<span className='text-amber-600 dark:text-amber-300 font-bold text-xs sm:text-sm'>
-											PREMIUM
-										</span>
-									</div>
-
-									{/* Mobile User Profile */}
-									<Link href='/profile'>
-										<motion.button
-											whileTap={{ scale: 0.95 }}
-											className='flex items-center gap-2 p-1.5 sm:p-2 bg-gradient-to-r from-red-600/20 to-purple-600/20 backdrop-blur-sm border border-red-500/30 dark:border-white/20 rounded-lg touch-target'>
-											<div className='relative w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-red-500 to-purple-600 rounded-lg flex items-center justify-center'>
-												<User className='h-3.5 w-3.5 sm:h-4 sm:w-4 text-white' />
-												<div className='absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 border-2 border-white dark:border-black rounded-full'></div>
-											</div>
-											<div className='text-left'>
-												<div className='text-gray-900 dark:text-white/90 font-semibold text-xs sm:text-sm'>
-													Profile
-												</div>
-											</div>
-										</motion.button>
-									</Link>
+							{/* Footer row */}
+							<div className="px-4 py-3 border-t border-pink-100 dark:border-pink-900/40
+							                flex items-center justify-between">
+								<div className="flex items-center gap-1.5 text-pink-400 text-xs font-semibold">
+									<Heart className="w-3.5 h-3.5 fill-pink-400" />
+									<span>CineVerse</span>
 								</div>
+								<Link
+									href="/profile"
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="flex items-center gap-2 px-3 py-1.5
+									           bg-pink-50 dark:bg-pink-900/30
+									           border border-pink-200/60 dark:border-pink-800/40
+									           rounded-xl text-sm font-semibold
+									           text-pink-600 dark:text-pink-300
+									           touch-target">
+									<User className="w-4 h-4" />
+									Profile
+								</Link>
 							</div>
 						</div>
 					</motion.div>

@@ -37,13 +37,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, index }) => {
       (r) => r.movieId === movie.imdbID
     );
     const newRatings = [...userRatings];
-
     if (existingIndex >= 0) {
       newRatings[existingIndex] = { movieId: movie.imdbID, rating };
     } else {
       newRatings.push({ movieId: movie.imdbID, rating });
     }
-
     setUserRatings(newRatings);
   };
 
@@ -57,9 +55,18 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, index }) => {
       whileHover={{ y: -6, transition: { duration: 0.2 } }}
       className="h-full group relative movie-card-hover"
     >
-      <Card className="overflow-hidden h-full shadow-xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-red-500/50 transition-all duration-300 flex flex-col">
-        {/* Poster area */}
-        <div className="aspect-[2/3] relative bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden flex-shrink-0">
+      <Card className="overflow-hidden h-full flex flex-col
+                       bg-white dark:bg-[#4a1e35]
+                       border border-pink-100 dark:border-pink-900/50
+                       hover:border-pink-300 dark:hover:border-pink-600/60
+                       shadow-sm hover:shadow-lg hover:shadow-pink-100/60
+                       transition-all duration-300 rounded-2xl">
+
+        {/* ── Poster ─────────────────────────────────────── */}
+        <div className="aspect-[2/3] relative overflow-hidden flex-shrink-0
+                        bg-gradient-to-br from-pink-50 to-rose-50
+                        dark:from-pink-950/60 dark:to-rose-950/60
+                        rounded-t-2xl">
           {hasPoster ? (
             <>
               <Image
@@ -71,64 +78,81 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, index }) => {
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 priority={index < 6}
               />
-              {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Soft pink gradient overlay on hover */}
+              <div className="absolute inset-0
+                              bg-gradient-to-t from-pink-900/50 via-pink-900/10 to-transparent
+                              opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+            /* No-poster placeholder */
+            <div className="w-full h-full flex items-center justify-center">
               <div className="text-center p-4">
-                <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-red-500/30 to-purple-500/30 rounded-full flex items-center justify-center">
-                  <Film className="w-8 h-8 text-gray-400" />
+                <div className="w-14 h-14 mx-auto mb-3
+                                bg-gradient-to-br from-pink-200 to-rose-200
+                                dark:from-pink-800/50 dark:to-rose-800/50
+                                rounded-full flex items-center justify-center">
+                  <Film className="w-7 h-7 text-pink-400 dark:text-pink-300" />
                 </div>
-                <p className="text-sm font-semibold text-gray-300 line-clamp-2">
+                <p className="text-xs font-semibold text-pink-500 dark:text-pink-300 line-clamp-2">
                   {movie.Title}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{movie.Year}</p>
+                <p className="text-xs text-pink-300 dark:text-pink-500 mt-1">{movie.Year}</p>
               </div>
             </div>
           )}
 
-          {/* View Details hover button */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+          {/* View Details button — appears on hover */}
+          <div className="absolute inset-0 flex items-center justify-center
+                          opacity-0 group-hover:opacity-100
+                          transition-opacity duration-300 z-10">
             <Link href={`/movies/${movie.imdbID}`}>
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/95 text-gray-900 rounded-full font-semibold text-sm shadow-lg hover:bg-white transition-colors"
-              >
+                className="flex items-center gap-2 px-5 py-2.5
+                           bg-white/95 text-pink-600
+                           rounded-full font-semibold text-sm
+                           shadow-lg shadow-pink-200/50
+                           hover:bg-pink-50 transition-colors">
                 <Eye className="w-4 h-4" />
                 View Details
               </motion.button>
             </Link>
           </div>
 
-          {/* Top-left: Watchlist button */}
+          {/* Top-left: Watchlist */}
           <div className="absolute top-2 left-2 z-20">
             <WatchlistButton movie={movie} size="sm" />
           </div>
 
-          {/* Top-right: Share button */}
+          {/* Top-right: Share */}
           <div className="absolute top-2 right-2 z-20">
             <ShareButton movie={movie} size="sm" />
           </div>
 
-          {/* User rating badge — bottom-right, only when rated */}
+          {/* User rating badge */}
           {isHydrated && userRating > 0 && (
-            <div className="absolute bottom-2 right-2 z-20 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg">
-              ⭐ {userRating}/5
+            <div className="absolute bottom-2 right-2 z-20
+                            bg-gradient-to-r from-pink-400 to-rose-400
+                            text-white px-2 py-0.5 rounded-full
+                            text-xs font-bold shadow-md">
+              ♥ {userRating}/5
             </div>
           )}
         </div>
 
-        {/* Card footer */}
-        <div className="p-3 flex flex-col gap-2 flex-1">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug">
+        {/* ── Card footer ────────────────────────────────── */}
+        <div className="p-3 flex flex-col gap-1.5 flex-1
+                        bg-white dark:bg-[#4a1e35]">
+          <h3 className="text-sm font-bold leading-snug line-clamp-2
+                         text-gray-800 dark:text-pink-100">
             {movie.Title}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+
+          <p className="text-xs text-pink-400 dark:text-pink-400">
             {movie.Year}
             {movie.Type && movie.Type !== "movie" && (
-              <span className="ml-1.5 capitalize text-purple-500 dark:text-purple-400">
+              <span className="ml-1.5 capitalize text-rose-400 dark:text-rose-400">
                 · {movie.Type}
               </span>
             )}
