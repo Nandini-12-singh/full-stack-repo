@@ -26,7 +26,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 					{dataKey}:{" "}
 					<span className='font-bold' style={{ color: payload[0].color }}>
 						{String(data[dataKey])}{" "}
-						{data.displayValue && `(${String(data.displayValue)})`}
+						{data.displayValue != null && `(${String(data.displayValue)})`}
 					</span>
 				</p>
 			</div>
