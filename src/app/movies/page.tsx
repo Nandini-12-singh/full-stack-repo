@@ -92,7 +92,6 @@ function MoviesPageContent() {
 
 	// Determine which data to use based on search type
 	const isActorSearch = searchType === "actor" && debouncedQuery.trim();
-	const isMovieSearch = searchType === "movie" || searchType === "both";
 
 	// Use actor movies data if searching for actors, otherwise use combined search
 	const data = isActorSearch ? actorMoviesData : undefined;

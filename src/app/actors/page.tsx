@@ -39,7 +39,6 @@ export default function ActorsPage() {
 	const {
 		data: actorMovies,
 		isLoading: isLoadingActorMovies,
-		error: actorMoviesError,
 	} = useMoviesByActor(selectedActor?.name || "");
 
 	const hasSearchQuery = searchQuery.trim().length > 0;

@@ -3,17 +3,24 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trash2, ChevronLeft, ChevronRight, LucideIcon } from "lucide-react";
 import { Button } from "./ui/Button";
 import { MovieCard } from "./MovieCard";
+import { Movie } from "../types/movie";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface MovieSectionProps {
+	title: string;
+	icon: LucideIcon;
+	movies: Movie[];
+	clearHandler: () => void;
+}
+
 export const MovieSection = ({
 	title,
 	icon: Icon,
 	movies,
 	clearHandler,
-}: any) => {
+}: MovieSectionProps) => {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(false);
@@ -93,8 +100,7 @@ export const MovieSection = ({
 					<div
 						ref={scrollRef}
 						className='flex gap-6 py-4 overflow-x-auto scroll-smooth scrollbar-none'>
-						{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-						{movies.map((movie: any, idx: number) => (
+						{movies.map((movie, idx) => (
 							<div
 								key={`${movie.imdbID}-${idx}`}
 								className='w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] flex-shrink-0'>

@@ -11,6 +11,21 @@ export interface TrailerResult {
     thumbnailUrl: string;
 }
 
+interface YoutubeThumbnail { url?: string; }
+interface YoutubeItem {
+    id?: { videoId?: string };
+    snippet: {
+        title: string;
+        channelTitle: string;
+        publishedAt: string;
+        thumbnails?: {
+            high?: YoutubeThumbnail;
+            medium?: YoutubeThumbnail;
+            default?: YoutubeThumbnail;
+        };
+    };
+}
+
 function buildQuery(title: string, year?: string) {
     const parts = [title, year, "official trailer"].filter(Boolean);
     return parts.join(" ");
@@ -36,9 +51,8 @@ export const trailerApi = {
 
         try {
             const resp = await fetch(`${YT_SEARCH_URL}?${params.toString()}`, {
-                // Cache for a short while to reduce rate usage on client
                 next: { revalidate: 60 },
-            } as any);
+            } as RequestInit & { next?: { revalidate?: number } });
 
             if (!resp.ok) {
                 if (resp.status === 403 || resp.status === 429) {
@@ -48,8 +62,8 @@ export const trailerApi = {
                 throw new Error(`YouTube API error: ${resp.status}`);
             }
 
-            const data = await resp.json();
-            const items: any[] = data.items || [];
+            const data = await resp.json() as { items?: YoutubeItem[] };
+            const items: YoutubeItem[] = data.items || [];
             if (items.length === 0) return null;
 
             // Prefer titles that include both the movie title and the word trailer
@@ -57,7 +71,7 @@ export const trailerApi = {
             const scored = items
                 .map((item) => {
                     const snippet = item.snippet;
-                    const videoId = item.id?.videoId as string | undefined;
+                    const videoId = item.id?.videoId;
                     if (!videoId) return null;
                     const t = (snippet.title as string).toLowerCase();
                     const ch = (snippet.channelTitle as string) || "";
@@ -83,8 +97,8 @@ export const trailerApi = {
             if (scored.length === 0) return null;
             scored.sort((a, b) => b.score - a.score);
             return scored[0].result;
-        } catch (err) {
-            // Fail soft and return null in UI
+        } catch {
+            // Fail soft — return null so the UI degrades gracefully
             return null;
         }
     },

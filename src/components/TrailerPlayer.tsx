@@ -18,7 +18,7 @@ export function TrailerPlayer({ videoId, title }: TrailerPlayerProps) {
                     </p>
                     {title && (
                         <p className='text-gray-500 dark:text-gray-400 text-sm mt-1'>
-                            Try searching YouTube for "{title} trailer"
+                            Try searching YouTube for &ldquo;{title} trailer&rdquo;
                         </p>
                     )}
                 </div>

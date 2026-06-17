@@ -49,12 +49,10 @@ const TVShowsPage = () => {
     };
 
     useEffect(() => {
-        // Pick a random default query each visit
         const query = DEFAULT_QUERIES[Math.floor(Math.random() * DEFAULT_QUERIES.length)];
         setCurrentQuery(query);
         fetchShows(query);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, []); // fetchShows is stable — defined outside effect scope
 
     return (
         <motion.div
