@@ -1,0 +1,25 @@
+# Dependencies — reinstalled inside Docker
+node_modules
+
+# Next.js build output — rebuilt inside Docker
+.next
+out
+
+# Local env files — secrets are injected at runtime, never baked in
+.env
+.env.local
+.env.*.local
+
+# Dev tooling
+.git
+.gitignore
+.vscode
+*.log
+npm-debug.log*
+
+# CI/CD config (not needed at runtime)
+.github
+
+# OS files
+.DS_Store
+Thumbs.db
